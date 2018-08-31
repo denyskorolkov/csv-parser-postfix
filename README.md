@@ -23,7 +23,7 @@ npm test
 
 ## Example
 
-__input__
+__input__ (cells are in postfix format)
 ```csv
 b1 b2 +,2 b2 3 * -,3 ,+
 a1,5 ,,7 2/
