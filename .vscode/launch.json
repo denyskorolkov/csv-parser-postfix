@@ -11,6 +11,6 @@
 		"outFiles": [
 			"${workspaceFolder}/**/*.js"
 		],
-		"args": ["./examples/default.csv"]
+		"args": ["sample.csv"]
 	}]
 }
