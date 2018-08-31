@@ -1,0 +1,24 @@
+{
+  "name": "@toltec/csv-parser-postfix",
+  "version": "0.0.0",
+  "description": "A program for parsing a given CSV file where each cell is in ​postfix notation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/denyskorolkov/csv-parser-postfix.git"
+  },
+  "keywords": [],
+  "author": "Denys Korolkov <denys@korolkov.pro> (http://korolkov.pro)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/denyskorolkov/csv-parser-postfix/issues"
+  },
+  "homepage": "https://github.com/denyskorolkov/csv-parser-postfix#readme",
+  "devDependencies": {
+    "@types/node": "^10.9.4",
+    "typescript": "^3.0.3"
+  }
+}
