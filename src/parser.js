@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function parser(input) {
+    let debugIterationCount = 0;
+    let debugRecursiveCount = 0;
+    let debugPostFixCount = 0;
     let output = [[]];
     let lastOutputIndex = 0;
     let initialColumn = 'a';
@@ -19,6 +22,7 @@ function parser(input) {
     const map = {};
     const cacheLinkCount = {};
     function updateLinks(cell) {
+        debugRecursiveCount++;
         if (cache[cell]) {
             cache[cell].forEach(item => {
                 output[item.index][item.linkIndex] = +map[cell];
@@ -32,17 +36,18 @@ function parser(input) {
     }
     function execByOperator(first, second, operator) {
         switch (operator) {
-            case '+':
-                return first + second;
             case '/':
                 return first - second;
             case '-':
                 return first - second;
             case '*':
                 return first * second;
+            default:
+                return first + second;
         }
     }
     function postFixExec(input) {
+        debugPostFixCount++;
         let output = 0;
         const stack = [];
         for (let i = 0; i < input.length; i++) {
@@ -51,36 +56,14 @@ function parser(input) {
             let second;
             switch (current) {
                 case '+':
-                    if (stack.length < 2) {
-                        return '#ERR';
-                    }
-                    [first, second] = stack.splice(-2);
-                    output = +first + +second;
-                    stack.push(output);
-                    break;
                 case '-':
-                    if (stack.length < 2) {
-                        return '#ERR';
-                    }
-                    [first, second] = stack.splice(-2);
-                    output = +first - +second;
-                    stack.push(output);
-                    break;
                 case '*':
-                    if (stack.length < 2) {
-                        return '#ERR';
-                    }
-                    [first, second] = stack.splice(-2);
-                    output = +first * +second;
-                    stack.push(output);
-                    break;
                 case '/':
                     if (stack.length < 2) {
                         return '#ERR';
                     }
                     [first, second] = stack.splice(-2);
-                    output = +first / +second;
-                    stack.push(output);
+                    stack.push(execByOperator(+first, +second, current));
                     break;
                 default:
                     stack.push(current);
@@ -88,22 +71,13 @@ function parser(input) {
         }
         switch (stack.length) {
             case 0:
-                return '0';
+                return 0;
             case 1:
                 return stack[0].toString();
             default:
                 return '#ERR';
         }
     }
-    //   console.log(postFixExec([]));
-    //   console.log(postFixExec([3]));
-    //   console.log(postFixExec([2, 3]));
-    //   console.log(postFixExec(['+']));
-    //   console.log(postFixExec(['+', 3]));
-    //   console.log(postFixExec([3, 4, '+']));
-    //   console.log(postFixExec([5, '+', 2, '+', 4, '*', '+', 3, '-']));
-    //   console.log(postFixExec([5, 1, 2, '+', 4, '*', '+', 3, '-']));
-    //   console.log(postFixExec([5, 1, 2, '+', 4, '*', '+', 3]));
     function cacheLink(lastOutputIndex, currentElement) {
         if (typeof map[currentElement] !== 'undefined') {
             currentElement = map[currentElement];
@@ -138,6 +112,7 @@ function parser(input) {
         const isEnd = i === inputLength - 1;
         // const isSpace = /[ ]/.test(currentChar);
         // const isOperator = /[/+-\\*]/.test(currentChar);
+        debugIterationCount++;
         if (/[\n]/.test(currentChar)) {
             currentRow++;
             currentColumn = initialColumn;
@@ -253,13 +228,19 @@ function parser(input) {
                 }
             }
             if (isEnd) {
-                output[lastOutputIndex].push(currentElement);
+                if (status === 'link') {
+                    cacheLink(lastOutputIndex, currentElement);
+                    output[lastOutputIndex] = postFixExec(output[lastOutputIndex]);
+                }
+                else {
+                    output[lastOutputIndex].push(currentElement);
+                }
             }
         }
         if (isSeparator || isEnd) {
             if (Array.isArray(output[lastOutputIndex])) {
                 if (linkCount === 0) {
-                    const value = (output[lastOutputIndex] = postFixExec(output[lastOutputIndex]));
+                    output[lastOutputIndex] = postFixExec(output[lastOutputIndex]);
                     map[prevCell] = output[lastOutputIndex];
                     updateLinks(prevCell);
                 }
@@ -274,6 +255,9 @@ function parser(input) {
             lastOutputIndex = output.push([]) - 1;
         }
     }
+    console.log('iteration count:', debugIterationCount);
+    console.log('recursive count (links):', debugRecursiveCount);
+    console.log('post fix execution count:', debugPostFixCount);
     return output.join('');
 }
 exports.default = parser;
