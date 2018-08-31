@@ -1,16 +1,6 @@
 import assert from 'assert';
 import parser from '../src/parser';
 
-//   console.log(postFixExec([]));
-//   console.log(postFixExec([3]));
-//   console.log(postFixExec([2, 3]));
-//   console.log(postFixExec(['+']));
-//   console.log(postFixExec(['+', 3]));
-//   console.log(postFixExec([3, 4, '+']));
-//   console.log(postFixExec([5, '+', 2, '+', 4, '*', '+', 3, '-']));
-//   console.log(postFixExec([5, 1, 2, '+', 4, '*', '+', 3, '-']));
-//   console.log(postFixExec([5, 1, 2, '+', 4, '*', '+', 3]));
-
 describe('CSV parser with postfix', function() {
   describe('postfix', function() {
     it('1+2', function() {
@@ -50,8 +40,12 @@ describe('CSV parser with postfix', function() {
     });
   });
   describe('parser', function() {
+    it('empty', function() {
+      assert.equal(parser(``), ``);
+    });
+
     it('linked forward', function() {
-      assert.deepEqual(
+      assert.equal(
         parser(
           `b2,,1
 1,c3,1
@@ -64,7 +58,7 @@ describe('CSV parser with postfix', function() {
     });
 
     it('linked back', function() {
-      assert.deepEqual(
+      assert.equal(
         parser(
           `5,,1
 1,a1,1
@@ -77,7 +71,7 @@ describe('CSV parser with postfix', function() {
     });
 
     it('sample', function() {
-      assert.deepEqual(
+      assert.equal(
         parser(`b1 b2 +,2 b2 3 * -,3 ,+
 a1,5 ,,7 2/
 c2 3*,1 2 , ,5 1 2+4*+3-`),
