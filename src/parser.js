@@ -1,12 +1,7 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
+Object.defineProperty(exports, "__esModule", { value: true });
 function parser(input) {
-    let output = [
-        []
-    ];
+    let output = [[]];
     let lastOutputIndex = 0;
     let initialColumn = 'a';
     let initialRow = 1;
@@ -23,13 +18,11 @@ function parser(input) {
     const cache = {};
     const map = {};
     const cacheLinkCount = {};
-
     function updateLinks(cell) {
         if (cache[cell]) {
             cache[cell].forEach(item => {
                 output[item.index][item.linkIndex] = +map[cell];
                 if (!--cacheLinkCount[item.cell]) {
-                    console.log(item.cell, cacheLinkCount, output[item.index]);
                     map[item.cell] = output[item.index] = postFixExec(output[item.index]);
                     updateLinks(item.cell);
                 }
@@ -37,7 +30,6 @@ function parser(input) {
         }
         map[prevCell] = output[lastOutputIndex];
     }
-
     function execByOperator(first, second, operator) {
         switch (operator) {
             case '+':
@@ -50,7 +42,6 @@ function parser(input) {
                 return first * second;
         }
     }
-
     function postFixExec(input) {
         let output = 0;
         const stack = [];
@@ -128,12 +119,14 @@ function parser(input) {
         };
         if (cache[currentElement]) {
             cache[currentElement].push(cacheOptions);
-        } else {
+        }
+        else {
             cache[currentElement] = [cacheOptions];
         }
         if (cacheLinkCount[prevCell]) {
             cacheLinkCount[prevCell]++;
-        } else {
+        }
+        else {
             cacheLinkCount[prevCell] = 1;
         }
     }
@@ -184,7 +177,8 @@ function parser(input) {
                         if (currentElement.length === 1) {
                             output[lastOutputIndex] = '#ERR';
                             status = 'error';
-                        } else {
+                        }
+                        else {
                             cacheLink(lastOutputIndex, currentElement);
                             status = 'space';
                         }
@@ -264,7 +258,6 @@ function parser(input) {
         }
         if (isSeparator || isEnd) {
             if (Array.isArray(output[lastOutputIndex])) {
-                console.log(output[lastOutputIndex]);
                 if (linkCount === 0) {
                     const value = (output[lastOutputIndex] = postFixExec(output[lastOutputIndex]));
                     map[prevCell] = output[lastOutputIndex];
@@ -284,3 +277,4 @@ function parser(input) {
     return output.join('');
 }
 exports.default = parser;
+//# sourceMappingURL=parser.js.map
